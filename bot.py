@@ -13,6 +13,7 @@ api_id = os.environ.get("TELEGRAM_API_ID")
 api_hash = os.environ.get("TELEGRAM_API_HASH")
 bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
 
+NOT_PASS_MESSAGE = "🧙‍♂️you shall not pass!"
 
 client = TelegramClient("bot", api_id, api_hash).start(bot_token=bot_token)
 
@@ -65,6 +66,7 @@ async def run_command(*args):
 @client.on(events.NewMessage(pattern=r"^add (?P<username>\w+)$"))
 async def add_user_handler(event):
     if event.chat.username != SUPERADMIN:
+        await event.reply(NOT_PASS_MESSAGE)
         return
 
     (username,) = event.pattern_match.groups()
@@ -91,6 +93,7 @@ async def remove_user_handler(event):
 @client.on(events.NewMessage(pattern=r"^users$"))
 async def list_users_handler(event):
     if event.chat.username != SUPERADMIN:
+        await event.reply(NOT_PASS_MESSAGE)
         return
 
     text = ", ".join(list_users(conn))
@@ -100,6 +103,7 @@ async def list_users_handler(event):
 @client.on(events.NewMessage(pattern=r"^download "))
 async def download_video_handler(event):
     if not is_allowed_user(event.chat.username):
+        await event.reply(NOT_PASS_MESSAGE)
         return
 
     notify_message = await event.reply("we're working on it...")
