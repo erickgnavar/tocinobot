@@ -1,5 +1,6 @@
 import asyncio
 import os
+import sqlite3
 import tempfile
 from pathlib import Path
 from uuid import uuid4
@@ -15,11 +16,39 @@ bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
 
 client = TelegramClient("bot", api_id, api_hash).start(bot_token=bot_token)
 
-db = set([SUPERADMIN])
+
+def setup_db(path):
+    conn = sqlite3.connect(path)
+    cursor = conn.cursor()
+    cursor.execute("create table if not exists users (username text)")
+    conn.commit()
+    return conn
+
+
+# TODO: place this connection in a better place
+conn = setup_db("data.db")
+
+
+def list_users(conn):
+    cursor = conn.cursor()
+    cursor.execute("select username from users")
+    return [row[0] for row in cursor.fetchall()]
+
+
+def add_user(conn, username):
+    cursor = conn.cursor()
+    cursor.execute("insert into users values (?)", (username,))
+    conn.commit()
+
+
+def remove_user(conn, username):
+    cursor = conn.cursor()
+    cursor.execute("delete from users where username = (?)", (username,))
+    conn.commit()
 
 
 def is_allowed_user(username):
-    return username in db
+    return username in list_users(conn)
 
 
 async def run_command(*args):
@@ -36,7 +65,7 @@ async def add_user_handler(event):
         return
 
     (username,) = event.pattern_match.groups()
-    db.add(username)
+    add_user(conn, username)
     await event.reply(f"{username} was added")
 
 
@@ -49,8 +78,8 @@ async def remove_user_handler(event):
 
     if username == SUPERADMIN:
         await event.reply("admin can't be deleted :P")
-    elif username in db:
-        db.remove(username)
+    elif username in list_users(conn):
+        remove_user(conn, username)
         await event.reply(f"{username} was removed")
     else:
         await event.reply(f"{username} doesn't exist")
@@ -61,7 +90,7 @@ async def list_users_handler(event):
     if event.chat.username != SUPERADMIN:
         return
 
-    text = ", ".join(db)
+    text = ", ".join(list_users(conn))
     await event.reply(f"users: {text}")
 
 

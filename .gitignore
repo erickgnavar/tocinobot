@@ -213,3 +213,6 @@ tags
 .vim
 
 # End of https://www.gitignore.io/api/vim,macos,emacs,direnv,python
+
+*.sqlite3
+*.db
