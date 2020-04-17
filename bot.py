@@ -21,6 +21,9 @@ def setup_db(path):
     conn = sqlite3.connect(path)
     cursor = conn.cursor()
     cursor.execute("create table if not exists users (username text)")
+    cursor.execute("select * from users where username = ?", (SUPERADMIN,))
+    if cursor.fetchone() is None:
+        cursor.execute("insert into users values (?)", (SUPERADMIN,))
     conn.commit()
     return conn
 
