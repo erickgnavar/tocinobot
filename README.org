@@ -1,0 +1,25 @@
+* tocinobot
+
+This is a bot that recieves an url from twitter, facebook, youtube, whatever and download the video from it. It was made just to because I was boring so it is very possible that it is useless for many people.
+
+** Setup
+
+A few environment variables are required to setup this bot:
+
+|--------------------+------------------------+----------------------------------------------------------------|
+| TELEGRAM_API_ID    | api_id                 | You get it from https://core.telegram.org/api/obtaining_api_id |
+| TELEGRAM_API_HASH  | api_hash               | You get it from https://core.telegram.org/api/obtaining_api_id |
+| TELEGRAM_BOT_TOKEN | bot_token              | You get it from @BotFather                                     |
+| SUPERADMIN         | your telegram username | It is used to tell the bot to respond only to you              |
+|--------------------+------------------------+----------------------------------------------------------------|
+
+Create a virtualenv with at least python 3.6 and install the dependencies using =pip install -r requirements.txt=. Also you'll need =youtube-dl= this program is who actually makes the magic. Then you can run the bot using =python bot.py=.
+
+** Commands
+
+- =users=: list the allowed users who can use this bot
+- =add {username}=: add a user to the allowed users list
+- =remove {username}=: remove a user from the allowed users list
+- =download {url}=: download the video from the given url
+
+Enjoy, maybe.
