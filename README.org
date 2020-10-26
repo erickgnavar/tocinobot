@@ -1,6 +1,6 @@
 * tocinobot
 
-This is a bot that recieves an url from twitter, facebook, youtube, whatever and download the video from it. It was made just to because I was boring so it is very possible that it is useless for many people.
+This is a bot that recieves an url from twitter, facebook, youtube, whatever and download the video from it. It was made because I was boring so it is very possible that it is useless for many people.
 
 ** Setup
 
@@ -22,4 +22,4 @@ Create a virtualenv with at least python 3.6 and install the dependencies using 
 - =remove {username}=: remove a user from the allowed users list
 - =download {url}=: download the video from the given url
 
-Enjoy, maybe.
+Enjoy, maybe. 🙃
