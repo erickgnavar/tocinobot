@@ -1,0 +1,4 @@
+.git
+*.session
+*.sqlite3
+*.db

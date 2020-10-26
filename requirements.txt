@@ -1,1 +1,2 @@
 Telethon==1.11.3
+youtube-dl==2020.9.20
