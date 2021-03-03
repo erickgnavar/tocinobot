@@ -123,6 +123,9 @@ async def download_video_handler(event):
         done_message = await event.reply("Your video is uploading")
 
         await client.send_file(sender, file=filepath)
+
+        # delete original message after the requested file is sent successfully
+        await event.delete()
         await done_message.delete()
     else:
         await event.reply("There was a problem, please try again later")
