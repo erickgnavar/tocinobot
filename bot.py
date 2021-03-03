@@ -100,7 +100,7 @@ async def list_users_handler(event):
     await event.reply(f"users: {text}")
 
 
-@client.on(events.NewMessage(pattern=r"^download "))
+@client.on(events.NewMessage(pattern=r"^video "))
 async def download_video_handler(event):
     if not is_allowed_user(event.chat.username):
         await event.reply(NOT_PASS_MESSAGE)
@@ -121,6 +121,42 @@ async def download_video_handler(event):
     if result:
         sender = await event.get_input_sender()
         done_message = await event.reply("Your video is uploading")
+
+        await client.send_file(sender, file=filepath)
+
+        # delete original message after the requested file is sent successfully
+        await event.delete()
+        await done_message.delete()
+    else:
+        await event.reply("There was a problem, please try again later")
+
+
+@client.on(events.NewMessage(pattern=r"^mp3 "))
+async def download_audio_handler(event):
+    if not is_allowed_user(event.chat.username):
+        await event.reply(NOT_PASS_MESSAGE)
+        return
+
+    notify_message = await event.reply("we're working on it...")
+
+    _, url = event.raw_text.split(" ")
+
+    # TODO: use metadata to name the resulting file
+    filepath = Path(tempfile.gettempdir()) / Path(f"{uuid4().hex}.%(ext)s")
+
+    args = ["youtube-dl", url, "--audio-format=mp3", "-o", filepath, "-x"]
+
+    result = await run_command(*args)
+
+    await notify_message.delete()
+
+    if result:
+        sender = await event.get_input_sender()
+        done_message = await event.reply("Your mp3 is uploading")
+
+        # we need to replace this because the extension will be inserted by youtube-dl
+        # and the filepath have the youtube-dl template
+        filepath = str(filepath).replace("%(ext)s", "mp3")
 
         await client.send_file(sender, file=filepath)
 
